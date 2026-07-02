@@ -24,7 +24,7 @@ class AuthController extends Controller
     ]);
 
     return response()->json([
-        'message' => 'Usuario registrado correctamente. Ahora puedes iniciar sesión.',
+        'message' => 'Usuario registrado correctamente.',
         'user' => $user,
     ], 201);
     }
