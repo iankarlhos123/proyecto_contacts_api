@@ -60,7 +60,7 @@ class AuthController extends Controller
     }
 
     public function update(Request $request)
-{
+   {
     $user = $request->user();
 
     // sometimes solo valida el campo si viene en el request 
