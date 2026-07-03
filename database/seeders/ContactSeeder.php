@@ -20,7 +20,6 @@ class ContactSeeder extends Seeder
             ['name' => 'Luis Fernández',   'phone_number' => '3003333333'],
             ['name' => 'Miles Morales',    'phone_number' => '3004444444'],
             ['name' => 'Ricardo Vargas',   'phone_number' => '3005555555'],
-            ['name' => 'Paola Jiménez',    'phone_number' => '3006666666'],
         ];
 
         $usuarios = User::all();

@@ -56,3 +56,140 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+Contacts API
+API REST hecha en Laravel para gestionar usuarios y sus contactos personales. Cada usuario autenticado solo puede ver, crear, actualizar y eliminar sus propios contactos.
+Requisitos previos
+Antes de clonar el proyecto, asegúrate de tener instalado:
+
+PHP >= 8.2
+Composer
+MySQL 
+Git
+
+1. Clonar el repositorio
+
+git clone https://github.com/iankarlhos123/proyecto_contacts_api.git
+
+2. Muevete al proyecto 
+
+cd proyecto_contacts_api
+
+3. Instalar dependencias de PHP
+
+composer install
+
+4. Configurar el archivo de entorno
+
+Copia el archivo de ejemplo:
+
+cp .env.example .env
+
+Genera la clave de la aplicación:
+
+php artisan key:generate
+
+5. Configurar la base de datos
+Abre el archivo .env y edita estas líneas con tus datos de MySQL:
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=contacts_api
+DB_USERNAME=root
+DB_PASSWORD=tu_contraseña
+
+Crea la base de datos en MySQL:
+
+CREATE DATABASE contacts_api;
+
+6. Ejecutar migraciones y poblar la base de datos
+
+php artisan migrate:fresh --seed
+
+Esto crea todas las tablas necesarias y las llena con datos de prueba: 10 usuarios, cada uno con 5 contactos.
+
+7. Levantar el servidor
+
+php artisan serve
+
+La API quedará disponible en:
+
+http://127.0.0.1:8000
+
+8. Correr los tests
+El proyecto usa Pest como framework de testing. Para correr todos los tests:
+
+php artisan test
+
+Qué cubren los tests:
+tests/Feature/AuthTest.php
+
+Registro de usuario exitoso
+Rechazo de registro con correo ya existente
+Actualización de información del usuario autenticado
+
+tests/Feature/ContactsTest.php
+
+Creación de contacto
+Listado de contactos (solo los del usuario autenticado)
+Rechazo de contacto con número de teléfono repetido (para el mismo usuario)
+Bloqueo de acceso a contactos de otro usuario
+
+9. Probar los endpoints con curl
+
+Registrar un usuario:
+curl -X POST http://127.0.0.1:8000/api/register \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{"name":"Ian karlhos","email":"ianks@gmail.com","password":"12345678"}'
+
+Iniciar sesión:
+curl -X POST http://127.0.0.1:8000/api/login \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{"email":"ianks@gmail.com","password":"12345678"}'
+
+Copia el token que devuelve la respuesta, lo vas a necesitar en las siguientes peticiones.
+
+Actualizar información del usuario:
+curl -X PUT http://127.0.0.1:8000/api/user \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -H "Authorization: Bearer TU_TOKEN" \
+  -d '{"name":"Nuevo Nombre"}'
+
+Crear un contacto:
+curl -X POST http://127.0.0.1:8000/api/contacts \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -H "Authorization: Bearer TU_TOKEN" \
+  -d '{"name":"Juan Perez","phone_number":"3001234567"}'
+
+Listar tus contactos:
+curl -X GET http://127.0.0.1:8000/api/contacts \
+  -H "Accept: application/json" \
+  -H "Authorization: Bearer TU_TOKEN"
+
+Ver un contacto específico:
+curl -X GET http://127.0.0.1:8000/api/contacts/1 \
+  -H "Accept: application/json" \
+  -H "Authorization: Bearer TU_TOKEN"
+
+Actualizar un contacto:
+curl -X PUT http://127.0.0.1:8000/api/contacts/1 \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -H "Authorization: Bearer TU_TOKEN" \
+  -d '{"name":"Nombre Actualizado"}'
+
+Eliminar un contacto:
+curl -X DELETE http://127.0.0.1:8000/api/contacts/1 \
+  -H "Accept: application/json" \
+  -H "Authorization: Bearer TU_TOKEN"
+
+Cerrar sesión:
+curl -X POST http://127.0.0.1:8000/api/logout \
+  -H "Accept: application/json" \
+  -H "Authorization: Bearer TU_TOKEN"
+
