@@ -10,9 +10,11 @@ class ContactController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+     public function index(Request $request)
     {
-        //
+        $contacts = $request->user()->contacts;
+
+        return response()->json($contacts);
     }
 
     /**
@@ -28,15 +30,26 @@ class ContactController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'phone_number' => 'required|string|max:20',
+        ]);
+
+        $contact = $request->user()->contacts()->create($validated);
+
+        return response()->json($contact, 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Contact $contact)
+    public function show(Request $request, Contact $contact)
     {
-        //
+        if ($contact->user_id !== $request->user()->id) {
+            return response()->json(['message' => 'No autorizado.'], 403);
+        }
+
+        return response()->json($contact);
     }
 
     /**
@@ -52,14 +65,31 @@ class ContactController extends Controller
      */
     public function update(Request $request, Contact $contact)
     {
-        //
+        if ($contact->user_id !== $request->user()->id) {
+            return response()->json(['message' => 'No autorizado.'], 403);
+        }
+
+        $validated = $request->validate([
+            'name' => 'sometimes|required|string|max:255',
+            'phone_number' => 'sometimes|required|string|max:20',
+        ]);
+
+        $contact->update($validated);
+
+        return response()->json($contact);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Contact $contact)
+    public function destroy(Request $request, Contact $contact)
     {
-        //
+        if ($contact->user_id !== $request->user()->id) {
+            return response()->json(['message' => 'No autorizado.'], 403);
+        }
+
+        $contact->delete();
+
+        return response()->json(['message' => 'Contacto eliminado.']);
     }
 }
