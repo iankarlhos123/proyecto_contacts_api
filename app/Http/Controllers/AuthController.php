@@ -50,12 +50,33 @@ class AuthController extends Controller
         'user' => $user,
         'token' => $token,
     ]);
-  }
+    }
 
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
 
         return response()->json(['message' => 'Sesión cerrada correctamente.']);
+    }
+
+    public function update(Request $request)
+{
+    $user = $request->user();
+
+    // sometimes solo valida el campo si viene en el request 
+    $validated = $request->validate([
+        'name' => 'sometimes|required|string|max:255',
+        'email' => 'sometimes|required|email|unique:users,email,' . $user->id,
+        'password' => 'sometimes|required|string|min:8',
+    ]);
+
+    // Si mandaron password nuevo lo encripta antes de guardarlo
+    if (isset($validated['password'])) {
+        $validated['password'] = Hash::make($validated['password']);
+    }
+
+    $user->update($validated);
+
+    return response()->json($user);
     }
 }

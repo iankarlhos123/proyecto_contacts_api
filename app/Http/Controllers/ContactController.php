@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Contact;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ContactController extends Controller
 {
@@ -29,16 +30,22 @@ class ContactController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'phone_number' => 'required|string|max:20',
-        ]);
+   {
+       $validated = $request->validate([
+           'name' => 'required|string|max:255',
+           'phone_number' => [
+               'required',
+               'string',
+               'max:20',
+               // Único, pero SOLO dentro de los contactos de ESTE usuario
+               Rule::unique('contacts')->where(fn ($query) => $query->where('user_id', $request->user()->id)),
+            ],
+       ]);
 
-        $contact = $request->user()->contacts()->create($validated);
+    $contact = $request->user()->contacts()->create($validated);
 
-        return response()->json($contact, 201);
-    }
+    return response()->json($contact, 201);
+   }
 
     /**
      * Display the specified resource.
