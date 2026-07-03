@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\Sanctum;
 
 
@@ -37,20 +38,32 @@ test('no permite registrar un usuario con un correo ya existente', function () {
 });
 
 //Que se actualice la información del usuario
-test('un usuario autenticado puede actualizar su información', function () {
-    $user = User::factory()->create();
+test('un usuario autenticado puede actualizar su nombre, correo y contraseña', function () {
+    $user = User::factory()->create([
+        'name' => 'Nombre Actual',
+        'email' => 'actual@example.com',
+        'password' => Hash::make('12345678'),
+    ]);
 
     Sanctum::actingAs($user);
 
     $response = $this->putJson('/api/user', [
         'name' => 'Nuevo Nombre',
+        'email' => 'nuevo@example.com',
+        'password' => '87654321',
     ]);
 
     $response->assertStatus(200)
-        ->assertJsonFragment(['name' => 'Nuevo Nombre']);
+        ->assertJsonFragment(['name' => 'Nuevo Nombre'])
+        ->assertJsonFragment(['email' => 'nuevo@example.com']);
 
     $this->assertDatabaseHas('users', [
         'id' => $user->id,
         'name' => 'Nuevo Nombre',
+        'email' => 'nuevo@example.com',
     ]);
+
+    $user->refresh();
+
+    expect(Hash::check('87654321', $user->password))->toBeTrue();
 });
