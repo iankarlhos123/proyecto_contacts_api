@@ -139,57 +139,84 @@ Bloqueo de acceso a contactos de otro usuario
 9. Probar los endpoints con curl
 
 Registrar un usuario:
+
+```bash
 curl -X POST http://127.0.0.1:8000/api/register \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   -d '{"name":"Ian karlhos","email":"ianks@gmail.com","password":"12345678"}'
+```
 
 Iniciar sesión:
+
+```bash
 curl -X POST http://127.0.0.1:8000/api/login \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   -d '{"email":"ianks@gmail.com","password":"12345678"}'
+```
 
 Copia el token que devuelve la respuesta, lo vas a necesitar en las siguientes peticiones.
 
 Actualizar información del usuario:
+
+```bash
 curl -X PUT http://127.0.0.1:8000/api/user \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   -H "Authorization: Bearer TU_TOKEN" \
-  -d '{"name":"Nuevo Nombre"}'
+  -d '{"name":"Nuevo Nombre","email":"nuevo@example.com","password":"nueva_contrasena_123"}'
+```
 
 Crear un contacto:
+
+```bash
 curl -X POST http://127.0.0.1:8000/api/contacts \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   -H "Authorization: Bearer TU_TOKEN" \
   -d '{"name":"Juan Perez","phone_number":"3001234567"}'
+```
 
 Listar tus contactos:
+
+```bash
 curl -X GET http://127.0.0.1:8000/api/contacts \
   -H "Accept: application/json" \
   -H "Authorization: Bearer TU_TOKEN"
+```
 
 Ver un contacto específico:
-curl -X GET http://127.0.0.1:8000/api/contacts/1 \
+
+```bash
+curl -X GET http://127.0.0.1:8000/api/contacts/51 \
   -H "Accept: application/json" \
   -H "Authorization: Bearer TU_TOKEN"
+```
 
 Actualizar un contacto:
-curl -X PUT http://127.0.0.1:8000/api/contacts/1 \
+
+```bash
+curl -X PUT http://127.0.0.1:8000/api/contacts/51 \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   -H "Authorization: Bearer TU_TOKEN" \
-  -d '{"name":"Nombre Actualizado"}'
+  -d '{"name":"Nombre Actualizado","phone_number":"3009998848"}'
+```
 
 Eliminar un contacto:
+
+```bash
 curl -X DELETE http://127.0.0.1:8000/api/contacts/1 \
   -H "Accept: application/json" \
   -H "Authorization: Bearer TU_TOKEN"
+```
 
 Cerrar sesión:
+
+```bash
 curl -X POST http://127.0.0.1:8000/api/logout \
   -H "Accept: application/json" \
   -H "Authorization: Bearer TU_TOKEN"
+```
 

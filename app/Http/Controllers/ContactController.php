@@ -13,7 +13,7 @@ class ContactController extends Controller
      */
      public function index(Request $request)
     {
-        $contacts = $request->user()->contacts;
+        $contacts = $request->user()->contacts()->paginate(10); 
 
         return response()->json($contacts);
     }
@@ -71,20 +71,28 @@ class ContactController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, Contact $contact)
-    {
-        if ($contact->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'No autorizado.'], 403);
-        }
-
-        $validated = $request->validate([
-            'name' => 'sometimes|required|string|max:255',
-            'phone_number' => 'sometimes|required|string|max:20',
-        ]);
-
-        $contact->update($validated);
-
-        return response()->json($contact);
+{
+    if ($contact->user_id !== $request->user()->id) {
+        return response()->json(['message' => 'No autorizado.'], 403);
     }
+
+    $validated = $request->validate([
+        'name' => 'sometimes|required|string|max:255',
+        'phone_number' => [
+            'sometimes',
+            'required',
+            'string',
+            'max:20',
+            Rule::unique('contacts')
+                ->where(fn ($query) => $query->where('user_id', $request->user()->id))
+                ->ignore($contact->id),
+        ],
+    ]);
+
+    $contact->update($validated);
+
+    return response()->json($contact);
+}
 
     /**
      * Remove the specified resource from storage.
