@@ -69,49 +69,67 @@ Git
 
 1. Clonar el repositorio
 
+```bash
 git clone https://github.com/iankarlhos123/proyecto_contacts_api.git
+```
 
 2. Muevete al proyecto 
 
+```bash
 cd proyecto_contacts_api
+```
 
 3. Instalar dependencias de PHP
 
+```bash
 composer install
+```
 
 4. Configurar el archivo de entorno
 
 Copia el archivo de ejemplo:
 
+```bash
 cp .env.example .env
+```
 
 Genera la clave de la aplicación:
 
+```bash
 php artisan key:generate
+```
 
 5. Configurar la base de datos
 Abre el archivo .env y edita estas líneas con tus datos de MySQL:
 
+```env
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_DATABASE=contacts_api
 DB_USERNAME=root
 DB_PASSWORD=tu_contraseña
+```
 
 Crea la base de datos en MySQL:
 
+```sql
 CREATE DATABASE contacts_api;
+```
 
 6. Ejecutar migraciones y poblar la base de datos
 
+```bash
 php artisan migrate:fresh --seed
+```
 
 Esto crea todas las tablas necesarias y las llena con datos de prueba: 10 usuarios, cada uno con 5 contactos.
 
 7. Levantar el servidor
 
+```bash
 php artisan serve
+```
 
 La API quedará disponible en:
 
@@ -120,7 +138,9 @@ http://127.0.0.1:8000
 8. Correr los tests
 El proyecto usa Pest como framework de testing. Para correr todos los tests:
 
+```bash
 php artisan test
+```
 
 Qué cubren los tests:
 tests/Feature/AuthTest.php
