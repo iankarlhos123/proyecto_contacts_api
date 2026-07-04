@@ -63,8 +63,11 @@ Requisitos previos
 Antes de clonar el proyecto, asegúrate de tener instalado:
 
 PHP >= 8.2
+
 Composer
+
 MySQL 
+
 Git
 
 1. Clonar el repositorio
